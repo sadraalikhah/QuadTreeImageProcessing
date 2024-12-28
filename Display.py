@@ -1,5 +1,8 @@
+import csv
 import pygame
+import math
 from QuadTree import QuadTree
+from UtilityFunctions import csv_to_image_array
 
 pygame.init()
 
@@ -9,14 +12,12 @@ white = (255, 255, 255)
 
 
 
-test_img = [
-    0, 0, 0, 0,
-    255, 255, 255, 255,
-    0, 255, 0, 255,
-    255, 0, 0, 255
-]
+# Convert CSV to image array
+csv_file = 'image4_RGB.csv'
+test_img = csv_to_image_array(csv_file)
 
-size = width, height = 400, 400
+length = int(math.sqrt(len(test_img)))
+size = width , height = length, length
 screen = pygame.display.set_mode(size)
 
 qt = QuadTree(test_img)

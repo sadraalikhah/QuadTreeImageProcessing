@@ -43,4 +43,8 @@ class QuadTree:
             self.bottom_right.display(screen)
         else:
             scale_factor = 1
-            pygame.draw.rect(screen, [self.Node.value] * 3, (self.x1 * scale_factor, self.y1 * scale_factor, (self.x2-self.x1) * scale_factor, (self.y2-self.y1) * scale_factor))
+            if isinstance(self.Node.value, int):
+                color = [self.Node.value] * 3  # Grayscale
+            else:
+                color = self.Node.value  # RGB
+            pygame.draw.rect(screen, color, (self.x1 * scale_factor, self.y1 * scale_factor, (self.x2-self.x1) * scale_factor, (self.y2-self.y1) * scale_factor))
