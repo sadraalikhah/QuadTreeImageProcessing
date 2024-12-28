@@ -2,13 +2,11 @@ import pygame
 from QuadTree import QuadTree
 
 pygame.init()
-size = width, height = 600, 400
 
 # Colors
 black = (0, 0, 0)
 white = (255, 255, 255)
 
-screen = pygame.display.set_mode(size)
 
 
 test_img = [
@@ -17,6 +15,9 @@ test_img = [
     0, 255, 0, 255,
     255, 0, 0, 255
 ]
+
+size = width, height = 400, 400
+screen = pygame.display.set_mode(size)
 
 qt = QuadTree(test_img)
 
