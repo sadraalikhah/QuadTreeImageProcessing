@@ -1,8 +1,9 @@
 from Node import Node
 import math
+import pygame
 
 def subdivide(img):
-    length = len(img)
+    length = int(math.sqrt(len(img)))
     span = ((0, length//2), (length//2, length))
     return [
         [img[length*i+j] for i in range(*rowRange) for j in range(*colRange)]
@@ -17,6 +18,7 @@ class QuadTree:
         self.y1 = y1
         self.x2 = x1+math.sqrt(len(img))
         self.y2 = y1+math.sqrt(len(img))
+        self.is_leaf = False
         divide = False
         for pixel in img:
             if pixel != img[0]:
@@ -31,4 +33,14 @@ class QuadTree:
             self.bottom_right = QuadTree(image_quads[3], level + 1, mid_x, mid_y)
         else:
             self.Node = Node(img[0])
+            self.is_leaf = True
             
+    def display(self, screen):
+        if (self.is_leaf == False):
+            self.top_left.display(screen)
+            self.top_right.display(screen)
+            self.bottom_left.display(screen)
+            self.bottom_right.display(screen)
+        else:
+            scale_factor = 50
+            pygame.draw.rect(screen, [self.Node.value] * 3, (self.x1 * scale_factor, self.y1 * scale_factor, (self.x2-self.x1) * scale_factor, (self.y2-self.y1) * scale_factor))

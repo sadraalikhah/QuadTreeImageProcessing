@@ -1,8 +1,6 @@
 import pygame
 from QuadTree import QuadTree
 
-qt = QuadTree({0,0,0,0,255,255,255,255,0,255,0,255,255,0,0,255})
-
 pygame.init()
 size = width, height = 600, 400
 
@@ -12,18 +10,25 @@ white = (255, 255, 255)
 
 screen = pygame.display.set_mode(size)
 
-mediumFont = pygame.font.Font("OpenSans-Regular.ttf", 28)
-largeFont = pygame.font.Font("OpenSans-Regular.ttf", 40)
-moveFont = pygame.font.Font("OpenSans-Regular.ttf", 60)
 
-while True:
+test_img = [
+    0, 0, 0, 0,
+    255, 255, 255, 255,
+    0, 255, 0, 255,
+    255, 0, 0, 255
+]
+
+qt = QuadTree(test_img)
+
+running = True
+while running:
 
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
-            sys.exit()
+            running = False
 
-    screen.fill(black)
+    screen.fill((0,255,0))
     
-    for (segment in Qua)
+    qt.display(screen)
     
     pygame.display.flip()
