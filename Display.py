@@ -22,6 +22,7 @@ screen = pygame.display.set_mode(size)
 qt = QuadTree(test_img)
 print(qt.height())
 
+#Save Image
 qt.output_image('img_result.png', False)
 
 running = True
