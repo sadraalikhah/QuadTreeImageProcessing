@@ -1,6 +1,8 @@
 from Node import Node
 import math
 import pygame
+from PIL import Image, ImageDraw
+
 
 def subdivide(img):
     length = int(math.sqrt(len(img)))
@@ -35,6 +37,15 @@ class QuadTree:
             self.Node = Node(img[0])
             self.is_leaf = True
             
+    def height(self):
+        if self.is_leaf:
+            return 1
+        else:
+            height = [self.top_left.height(), self.top_right.height(), self.bottom_left.height(), self.bottom_right.height()]
+            return max(height) + 1
+        
+    
+    #graphics
     def display(self, screen):
         if (self.is_leaf == False):
             self.top_left.display(screen)
@@ -47,4 +58,43 @@ class QuadTree:
                 color = [self.Node.value] * 3  # Grayscale
             else:
                 color = self.Node.value  # RGB
+            
             pygame.draw.rect(screen, color, (self.x1 * scale_factor, self.y1 * scale_factor, (self.x2-self.x1) * scale_factor, (self.y2-self.y1) * scale_factor))
+            # pygame.draw.rect(screen, (255,0,0), (self.x1 * scale_factor, self.y1 * scale_factor, (self.x2-self.x1) * scale_factor, (self.y2-self.y1) * scale_factor), 1)
+    
+    def draw_QT_rectangle(self, img, scale_factor):
+        if (self.is_leaf == False):
+            self.top_left.draw_QT_rectangle(img, scale_factor)
+            self.top_right.draw_QT_rectangle(img, scale_factor)
+            self.bottom_left.draw_QT_rectangle(img, scale_factor)
+            self.bottom_right.draw_QT_rectangle(img, scale_factor)
+        else:
+            if isinstance(self.Node.value, int):
+                color = [self.Node.value] * 3  # Grayscale
+            else:
+                color = self.Node.value  # RGB
+            
+            ImageDraw.Draw(img).rectangle(
+                (self.x1 * scale_factor, self.y1 * scale_factor, self.x2 * scale_factor, self.y2 * scale_factor),
+                fill=tuple(color)
+            )
+            ImageDraw.Draw(img).rectangle(
+                (self.x1 * scale_factor, self.y1 * scale_factor, self.x2 * scale_factor, self.y2 * scale_factor),
+                outline=(255, 0, 0), width=1
+            )
+    
+    def output_image(self, filename, show_borders=True):
+        scale_factor = 5
+        cell_border = 1
+
+        # Create a blank canvas
+        img = Image.new(
+            "RGBA",
+            (int((self.x2-self.x1) * scale_factor), int((self.y2-self.y1) * scale_factor)),
+            "green"
+        )
+        
+        self.draw_QT_rectangle(img, scale_factor)
+        
+
+        img.save(filename)
