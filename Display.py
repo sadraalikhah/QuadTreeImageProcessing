@@ -19,13 +19,17 @@ length = int(math.sqrt(len(test_img)))
 size = width , height = length, length
 screen = pygame.display.set_mode(size)
 
+#tree construction
 qt = QuadTree(test_img)
+
+#method test
 print(qt.getDepth())
 print(qt.pixelDepth(1,1))
 
 #Save Image
 qt.output_image('img_result.png', False)
 
+#set running to false if you don't want live view
 running = True
 while running:
 

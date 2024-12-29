@@ -49,10 +49,14 @@ class QuadTree:
             if (self.x1 <= x and x < self.x2 and self.y1 <= y and y < self.y2):
                 return depth
         else:
-            return self.top_left.pixelDepth(x,y, depth+1)
-            return self.top_right.pixelDepth(x,y, depth+1)
-            return self.bottom_left.pixelDepth(x,y, depth+1)
-            return self.bottom_right.pixelDepth(x,y, depth+1)
+            if (self.top_left.x1 <= x and x < self.top_left.x2 and self.top_left.y1 <= y and y < self.top_left.y2):
+                return self.top_left.pixelDepth(x, y, depth + 1)
+            elif (self.top_right.x1 <= x and x < self.top_right.x2 and self.top_right.y1 <= y and y < self.top_right.y2):
+                return self.top_right.pixelDepth(x, y, depth + 1)
+            elif (self.bottom_left.x1 <= x and x < self.bottom_left.x2 and self.bottom_left.y1 <= y and y < self.bottom_left.y2):
+                return self.bottom_left.pixelDepth(x, y, depth + 1)
+            elif (self.bottom_right.x1 <= x and x < self.bottom_right.x2 and self.bottom_right.y1 <= y and y < self.bottom_right.y2):
+                return self.bottom_right.pixelDepth(x, y, depth + 1)
     
     #graphics
     def display(self, screen):

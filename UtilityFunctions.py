@@ -1,5 +1,4 @@
 import csv
-from PIL import Image
 
 def csv_to_image_array(csv_file):
     with open(csv_file, newline='') as f:
