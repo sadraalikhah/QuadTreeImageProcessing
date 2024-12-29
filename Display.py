@@ -20,7 +20,8 @@ size = width , height = length, length
 screen = pygame.display.set_mode(size)
 
 qt = QuadTree(test_img)
-print(qt.height())
+print(qt.getDepth())
+print(qt.pixelDepth(1,1))
 
 #Save Image
 qt.output_image('img_result.png', False)

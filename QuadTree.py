@@ -37,13 +37,22 @@ class QuadTree:
             self.Node = Node(img[0])
             self.is_leaf = True
             
-    def height(self):
+    def getDepth(self):
         if self.is_leaf:
             return 1
         else:
-            height = [self.top_left.height(), self.top_right.height(), self.bottom_left.height(), self.bottom_right.height()]
-            return max(height) + 1
+            depth = [self.top_left.getDepth(), self.top_right.getDepth(), self.bottom_left.getDepth(), self.bottom_right.getDepth()]
+            return max(depth) + 1
         
+    def pixelDepth(self, x, y, depth = 1):
+        if (self.is_leaf):
+            if (self.x1 <= x and x < self.x2 and self.y1 <= y and y < self.y2):
+                return depth
+        else:
+            return self.top_left.pixelDepth(x,y, depth+1)
+            return self.top_right.pixelDepth(x,y, depth+1)
+            return self.bottom_left.pixelDepth(x,y, depth+1)
+            return self.bottom_right.pixelDepth(x,y, depth+1)
     
     #graphics
     def display(self, screen):
