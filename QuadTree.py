@@ -96,7 +96,7 @@ class QuadTree:
                 outline=(255, 0, 0), width=1
             )
     
-    def output_image(self, filename, show_borders=True):
+    def output_image(self, filename, show_borders=False):
         scale_factor = 5
 
         # Create a blank canvas
@@ -109,4 +109,68 @@ class QuadTree:
         self.draw_QT_rectangle(img, scale_factor, show_borders)
         
 
+        img.save(filename)
+        
+    
+    def is_overlapped(self, x1, y1, x2, y2):
+    # Check if there is no overlap
+        if (self.x2 <= x1 or  # Self is to the left of the other
+            self.x1 >= x2 or  # Self is to the right of the other
+            self.y2 <= y1 or  # Self is above the other
+            self.y1 >= y2):  # Self is below the other
+            return False
+        return True
+    
+    def findCanvasRange(self, canvas, x1, y1, x2, y2):
+        
+        if (self.is_leaf == False):
+            self.top_left.findCanvasRange(canvas, x1, y1, x2, y2)
+            self.top_right.findCanvasRange(canvas, x1, y1, x2, y2)
+            self.bottom_left.findCanvasRange(canvas, x1, y1, x2, y2)
+            self.bottom_right.findCanvasRange(canvas, x1, y1, x2, y2)
+        else:
+            if self.is_overlapped(x1, y1, x2, y2):
+                canvas['x1'] = min(canvas['x1'], self.x1)
+                canvas['y1'] = min(canvas['y1'], self.y1)
+                canvas['x2'] = max(canvas['x2'], self.x2)
+                canvas['y2'] = max(canvas['y2'], self.y2)
+                
+    def drawSubspace(self, img, scale_factor, show_borders, x1, y1, x2, y2):
+        if (self.is_leaf == False):
+            self.top_left.drawSubspace(img, scale_factor, show_borders, x1, y1, x2, y2)
+            self.top_right.drawSubspace(img, scale_factor, show_borders, x1, y1, x2, y2)
+            self.bottom_left.drawSubspace(img, scale_factor, show_borders, x1, y1, x2, y2)
+            self.bottom_right.drawSubspace(img, scale_factor, show_borders, x1, y1, x2, y2)
+        elif (self.is_overlapped(x1, y1, x2, y2)):
+            if isinstance(self.Node.value, int):
+                color = [self.Node.value] * 3  # Grayscale
+            else:
+                color = self.Node.value  # RGB
+            
+            ImageDraw.Draw(img).rectangle(
+                (self.x1 * scale_factor, self.y1 * scale_factor, self.x2 * scale_factor, self.y2 * scale_factor),
+                fill=tuple(color)
+            )
+            ImageDraw.Draw(img).rectangle(
+                (self.x1 * scale_factor, self.y1 * scale_factor, self.x2 * scale_factor, self.y2 * scale_factor),
+                outline=(255, 0, 0), width=1
+            )
+    
+    
+    def searchSubspacesWithRange(self, filename , x1, y1, x2, y2, show_borders=False):
+        scale_factor = 5
+
+        canvas = {'x1': x1, 'y1': y1, 'x2': x2, 'y2': y2}
+
+        self.findCanvasRange(canvas, x1, y1, x2, y2)
+        
+        # Create a blank canvas
+        img = Image.new(
+            "RGBA",
+            (int((canvas['x2']-canvas['x1']) * scale_factor), int((canvas['y2']-canvas['y1']) * scale_factor)),
+            "white"
+        )
+        
+        self.drawSubspace(img, scale_factor, show_borders, x1, y1, x2, y2)
+        
         img.save(filename)

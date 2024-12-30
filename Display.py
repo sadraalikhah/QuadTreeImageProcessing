@@ -26,11 +26,13 @@ qt = QuadTree(test_img)
 print(qt.getDepth())
 print(qt.pixelDepth(1,1))
 
+qt.searchSubspacesWithRange('img_subspace.png', 10,10, 200, 300, True)
+
 #Save Image
 qt.output_image('img_result.png', False)
 
 #set running to false if you don't want live view
-running = True
+running = False
 while running:
 
     for event in pygame.event.get():
