@@ -29,6 +29,9 @@ print(qt.pixelDepth(1,1))
 
 qt.searchSubspacesWithRange('img_subspace.png', 10,10, 200, 300, True)
 
+#Save Image
+qt.output_image('img_result.png', False)
+
 original_img = Image.open("img_result.png")
 qt.mask(original_img,'img_mask.png', 10,10, 200, 300)
 
@@ -38,8 +41,6 @@ compressed_img.save("compressed_image.png")
 
 
 
-#Save Image
-qt.output_image('img_result.png', False)
 
 #set running to false if you don't want live view
 running = False
