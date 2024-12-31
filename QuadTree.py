@@ -174,3 +174,97 @@ class QuadTree:
         self.drawSubspace(img, scale_factor, show_borders, x1, y1, x2, y2)
         
         img.save(filename)
+
+    def mask(self, filename, x1, y1, x2, y2 ):
+        scale_factor = 5
+
+        canvas = {'x1': x1, 'y1': y1, 'x2': x2, 'y2': y2}
+        self.findCanvasRange(canvas, x1, y1, x2, y2)
+
+        img = Image.new(
+            "RGBA",
+            (int((canvas['x2'] - canvas['x1']) * scale_factor), int((canvas['y2'] - canvas['y1']) * scale_factor)),
+            "black"
+        )
+
+        self.maskSubspace(img, scale_factor, x1, y1, x2, y2)
+
+        img.save(filename)
+
+    def maskSubspace(self, img, scale_factor, x1, y1, x2, y2):
+        if not self.is_leaf:
+            self.top_left.maskSubspace(img, scale_factor, x1, y1, x2, y2)
+            self.top_right.maskSubspace(img, scale_factor, x1, y1, x2, y2)
+            self.bottom_left.maskSubspace(img, scale_factor, x1, y1, x2, y2)
+            self.bottom_right.maskSubspace(img, scale_factor, x1, y1, x2, y2)
+        elif self.is_overlapped(x1, y1, x2, y2):
+
+            ImageDraw.Draw(img).rectangle(
+                (self.x1 * scale_factor, self.y1 * scale_factor, self.x2 * scale_factor, self.y2 * scale_factor),
+                fill="white"
+            )
+            ImageDraw.Draw(img).rectangle(
+                (self.x1 * scale_factor, self.y1 * scale_factor, self.x2 * scale_factor, self.y2 * scale_factor),
+                outline=(255, 0, 0), width=1
+            )
+
+    def compress(self, target_size):
+
+        scale_factor = int((self.x2 - self.x1) / target_size)
+        compressed_image = []
+
+        for i in range(target_size):
+            row = []
+            for j in range(target_size):
+                start_x = int(self.x1 + j * scale_factor)
+                start_y = int(self.y1 + i * scale_factor)
+                end_x = int(start_x + scale_factor)
+                end_y = int(start_y + scale_factor)
+
+                total_value = [0, 0, 0] if isinstance(self.get_pixel_value(start_x, start_y), tuple) else 0
+                pixel_count = 0
+
+                for y in range(start_y, end_y):
+                    for x in range(start_x, end_x):
+                        pixel = self.get_pixel_value(x, y)
+                        if isinstance(total_value, list):
+                            total_value[0] += pixel[0]
+                            total_value[1] += pixel[1]
+                            total_value[2] += pixel[2]
+                        else:
+                            total_value += pixel
+                        pixel_count += 1
+
+                if isinstance(total_value, list):
+                    row.append(tuple(total // pixel_count for total in total_value))
+                else:
+                    row.append(total_value // pixel_count)
+
+            compressed_image.append(row)
+
+        compressed_img = Image.new(
+            "RGB" if isinstance(self.get_pixel_value(self.x1, self.y1), tuple) else "L",
+            (target_size, target_size)
+        )
+
+        for i in range(target_size):
+            for j in range(target_size):
+                compressed_img.putpixel((j, i), compressed_image[i][j])
+
+        return compressed_img
+
+    def get_pixel_value(self, x, y):
+
+        if self.is_leaf:
+            if self.x1 <= x < self.x2 and self.y1 <= y < self.y2:
+                return self.Node.value
+        else:
+            if self.top_left.x1 <= x < self.top_left.x2 and self.top_left.y1 <= y < self.top_left.y2:
+                return self.top_left.get_pixel_value(x, y)
+            elif self.top_right.x1 <= x < self.top_right.x2 and self.top_right.y1 <= y < self.top_right.y2:
+                return self.top_right.get_pixel_value(x, y)
+            elif self.bottom_left.x1 <= x < self.bottom_left.x2 and self.bottom_left.y1 <= y < self.bottom_left.y2:
+                return self.bottom_left.get_pixel_value(x, y)
+            elif self.bottom_right.x1 <= x < self.bottom_right.x2 and self.bottom_right.y1 <= y < self.bottom_right.y2:
+                return self.bottom_right.get_pixel_value(x, y)
+

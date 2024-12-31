@@ -28,6 +28,14 @@ print(qt.pixelDepth(1,1))
 
 qt.searchSubspacesWithRange('img_subspace.png', 10,10, 200, 300, True)
 
+qt.mask('img_mask.png', 10,10, 200, 300)
+
+compressed_img = qt.compress(target_size=128)
+compressed_img.save("compressed_image.png")
+
+
+
+
 #Save Image
 qt.output_image('img_result.png', False)
 
