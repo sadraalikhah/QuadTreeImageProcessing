@@ -2,6 +2,7 @@ import pygame
 import math
 from QuadTree import QuadTree
 from UtilityFunctions import csv_to_image_array
+from PIL import Image
 
 pygame.init()
 
@@ -28,7 +29,8 @@ print(qt.pixelDepth(1,1))
 
 qt.searchSubspacesWithRange('img_subspace.png', 10,10, 200, 300, True)
 
-qt.mask('img_mask.png', 10,10, 200, 300)
+original_img = Image.open("img_result.png")
+qt.mask(original_img,'img_mask.png', 10,10, 200, 300)
 
 compressed_img = qt.compress(target_size=128)
 compressed_img.save("compressed_image.png")

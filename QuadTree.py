@@ -175,37 +175,41 @@ class QuadTree:
         
         img.save(filename)
 
-    def mask(self, filename, x1, y1, x2, y2 ):
+    def mask(self, original_img, filename, x1, y1, x2, y2):
         scale_factor = 5
+        img_with_mask = original_img.copy()
 
         canvas = {'x1': x1, 'y1': y1, 'x2': x2, 'y2': y2}
         self.findCanvasRange(canvas, x1, y1, x2, y2)
 
-        img = Image.new(
+        mask_img = Image.new(
             "RGBA",
             (int((canvas['x2'] - canvas['x1']) * scale_factor), int((canvas['y2'] - canvas['y1']) * scale_factor)),
             "black"
         )
 
-        self.maskSubspace(img, scale_factor, x1, y1, x2, y2)
+        self.maskSubspace(img_with_mask, mask_img, scale_factor, x1, y1, x2, y2)
+        img_with_mask.save(filename)
+        # img_with_mask.show()
 
-        img.save(filename)
-
-    def maskSubspace(self, img, scale_factor, x1, y1, x2, y2):
+    def maskSubspace(self, img_with_mask, mask_img, scale_factor, x1, y1, x2, y2):
         if not self.is_leaf:
-            self.top_left.maskSubspace(img, scale_factor, x1, y1, x2, y2)
-            self.top_right.maskSubspace(img, scale_factor, x1, y1, x2, y2)
-            self.bottom_left.maskSubspace(img, scale_factor, x1, y1, x2, y2)
-            self.bottom_right.maskSubspace(img, scale_factor, x1, y1, x2, y2)
+            self.top_left.maskSubspace(img_with_mask, mask_img, scale_factor, x1, y1, x2, y2)
+            self.top_right.maskSubspace(img_with_mask, mask_img, scale_factor, x1, y1, x2, y2)
+            self.bottom_left.maskSubspace(img_with_mask, mask_img, scale_factor, x1, y1, x2, y2)
+            self.bottom_right.maskSubspace(img_with_mask, mask_img, scale_factor, x1, y1, x2, y2)
         elif self.is_overlapped(x1, y1, x2, y2):
-
-            ImageDraw.Draw(img).rectangle(
+            ImageDraw.Draw(mask_img).rectangle(
                 (self.x1 * scale_factor, self.y1 * scale_factor, self.x2 * scale_factor, self.y2 * scale_factor),
                 fill="white"
             )
-            ImageDraw.Draw(img).rectangle(
+            ImageDraw.Draw(mask_img).rectangle(
                 (self.x1 * scale_factor, self.y1 * scale_factor, self.x2 * scale_factor, self.y2 * scale_factor),
                 outline=(255, 0, 0), width=1
+            )
+            ImageDraw.Draw(img_with_mask).rectangle(
+                (self.x1 * scale_factor, self.y1 * scale_factor, self.x2 * scale_factor, self.y2 * scale_factor),
+                fill="white"
             )
 
     def compress(self, target_size):
