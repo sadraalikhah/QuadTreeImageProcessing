@@ -91,10 +91,11 @@ class QuadTree:
                 (self.x1 * scale_factor, self.y1 * scale_factor, self.x2 * scale_factor, self.y2 * scale_factor),
                 fill=tuple(color)
             )
-            ImageDraw.Draw(img).rectangle(
-                (self.x1 * scale_factor, self.y1 * scale_factor, self.x2 * scale_factor, self.y2 * scale_factor),
-                outline=(255, 0, 0), width=1
-            )
+            if(show_borders):
+                ImageDraw.Draw(img).rectangle(
+                    (self.x1 * scale_factor, self.y1 * scale_factor, self.x2 * scale_factor, self.y2 * scale_factor),
+                    outline=(255, 0, 0), width=1
+                )
     
     def output_image(self, filename, show_borders=False):
         scale_factor = 5
@@ -143,6 +144,7 @@ class QuadTree:
             self.bottom_right.drawSubspace(img, scale_factor, show_borders, x1, y1, x2, y2)
         elif (self.is_overlapped(x1, y1, x2, y2)):
             if isinstance(self.Node.value, int):
+                
                 color = [self.Node.value] * 3  # Grayscale
             else:
                 color = self.Node.value  # RGB
@@ -151,10 +153,11 @@ class QuadTree:
                 (self.x1 * scale_factor, self.y1 * scale_factor, self.x2 * scale_factor, self.y2 * scale_factor),
                 fill=tuple(color)
             )
-            ImageDraw.Draw(img).rectangle(
-                (self.x1 * scale_factor, self.y1 * scale_factor, self.x2 * scale_factor, self.y2 * scale_factor),
-                outline=(255, 0, 0), width=1
-            )
+            if(show_borders):
+                ImageDraw.Draw(img).rectangle(
+                    (self.x1 * scale_factor, self.y1 * scale_factor, self.x2 * scale_factor, self.y2 * scale_factor),
+                    outline=(255, 0, 0), width=1
+                )
     
     
     def searchSubspacesWithRange(self, filename , x1, y1, x2, y2, show_borders=False):

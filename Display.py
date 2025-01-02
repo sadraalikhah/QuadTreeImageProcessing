@@ -13,7 +13,7 @@ white = (255, 255, 255)
 
 
 # Convert CSV to image array
-csv_file = 'image3_gray.csv'
+csv_file = 'image4_RGB.csv'
 test_img = csv_to_image_array(csv_file)
 
 length = int(math.sqrt(len(test_img)))
@@ -24,18 +24,18 @@ screen = pygame.display.set_mode(size)
 qt = QuadTree(test_img)
 
 #method test
-print(qt.getDepth())
-print(qt.pixelDepth(1,1))
+# print(qt.getDepth())
+print(qt.pixelDepth(10,10))
 
-qt.searchSubspacesWithRange('img_subspace.png', 10,10, 200, 300, True)
+qt.searchSubspacesWithRange('img_subspace.png', 1,1, 80, 80, show_borders=True)
 
 #Save Image
 qt.output_image('img_result.png', False)
 
 original_img = Image.open("img_result.png")
-qt.mask(original_img,'img_mask.png', 10,10, 200, 300)
+qt.mask(original_img,'img_mask.png', 50,50, 200, 200)
 
-compressed_img = qt.compress(target_size=128)
+compressed_img = qt.compress(target_size=32)
 compressed_img.save("compressed_image.png")
 
 
